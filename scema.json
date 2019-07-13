@@ -1,0 +1,16 @@
+{
+    "games": {
+        "pqihbi": {
+            "players": [
+                {
+                    "role": "lead",
+                    "name": "test"
+                }
+            ],
+            "canvasData": "",
+            "target": "word",
+            "isStarted": false,
+            "isEnded": false
+        }
+    }
+}

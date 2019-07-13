@@ -1,11 +1,17 @@
 import { hot } from 'react-hot-loader/root';
 import React from 'react';
-import firebase from '../../firebase';
+import routes from '../../routes';
+import { useRoutes } from 'hookrouter';
+import styles from './styles.css';
 
 const App = () => {
-    return <div>App component</div>;
-};
+    const route = useRoutes(routes);
 
-console.log(firebase);
+    return (
+        <div className={styles.root}>
+            {route || <div>404 PAGE</div>}
+        </div>
+    );
+};
 
 export default hot(App);

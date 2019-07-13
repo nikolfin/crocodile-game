@@ -4,4 +4,10 @@ import 'firebase/database';
 
 firebase.initializeApp(firebaseConfig);
 
+const db = firebase.database();
+
+export {
+    db
+}
+
 export default firebase;
