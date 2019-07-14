@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db, auth, signIn } from '../../firebase';
 import { navigate } from 'hookrouter';
 import styles from './styles.css';
 
 const gameId = Math.random().toString(36).substring(7);
 
+// Атвторизуемся анонимным пользователем
 signIn();
 
 const Home = () => {
     const [word, setWord] = useState(null);
     const [uid, setUid] = useState(null);
 
+    // записываем в стейт id пользователя
+    useEffect(() => {
+        auth.onAuthStateChanged(user => {
+            user && setUid(user.uid);
+        });
+    }, []);
+
+    // регистрирует новую игру и добавляет в бд
+    // если игрок регистрирует новую игру, то он является ведущим
     function registerGame() {
         db.
         ref(`games/${gameId}`).
@@ -25,13 +35,10 @@ const Home = () => {
             targetWord: word,
             canvasData: ''
         }, () => {
+            // после успешного добавления игры в бд редиректим на стр игры
             navigate(`/game/${gameId}`)
         });
     }
-
-    auth.onAuthStateChanged(user => {
-        user && setUid(user.uid);
-    });
 
     return (
         <div className={styles.root}>

@@ -12,33 +12,35 @@ signIn();
 const Game = ({ gameId }) => {
     const dbPlayersRef = db.ref(`games/${gameId}/players`);
     const [uid, setUid] = useState(null);
-    const [shouldBePlayerAdded, setShouldBePlayerAdded] = useState(false);
+    const [players, setPlayers] = useState(null);
 
+    // фетчим список игроков с бд
     useEffect(() => {
-        if (shouldBePlayerAdded) {
+        dbPlayersRef.on('value', fetchPlayers);
+        return () => {
+            dbPlayersRef.off('value', fetchPlayers);
+        }
+    }, []);
+
+    // записываем в стейт id пользователя
+    useEffect(() => {
+        auth.onAuthStateChanged(user => {
+            user && setUid(user.uid);
+        });
+    }, []);
+
+    // Проверяем есть ли такой пользователь в бд,
+    // если нет, то добавляем и назначем ему статус isLead = false
+    useEffect(() => {
+        if (uid && players && !players[uid]) {
             dbPlayersRef.
             child(uid).
             set(regularPlayer);
         }
-        if (uid) {
-            checkShouldBePlayerAdded(uid);
-        }
-    }, [shouldBePlayerAdded, uid]);
+    }, [uid, players]);
 
-    auth.
-    onAuthStateChanged(user => {
-        if (user) {
-            setUid(user.uid);
-        }
-    });
-
-    function checkShouldBePlayerAdded(uid) {
-        dbPlayersRef.
-        on('value', snapshot => {
-            const players = Object.keys(snapshot.val());
-
-            setShouldBePlayerAdded(!players.some(item => item === uid));
-        });
+    function fetchPlayers(snap) {
+        snap.val() && setPlayers(snap.val());
     }
 
     return (
