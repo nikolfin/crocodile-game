@@ -1,9 +1,8 @@
 import React from 'react';
 import Home from '../components/home/home';
+import Game from '../components/game/game';
 
-const index = {
+export default {
     '/': () => <Home />,
-    '/game/:gameId': ({ gameId }) => <div>{gameId}</div>
+    '/game/:gameId': ({ gameId }) => <Game gameId={gameId} />
 };
-
-export default index;
