@@ -45,13 +45,21 @@ const Game = ({ gameId }) => {
         snap.val() && setPlayers(snap.val());
     }
 
+    function handleSetPlayerName(name) {
+        dbPlayersRef.child(uid).update({ name });
+    }
+
     if (!(players && players[uid])) {
         return <div>Loading...</div>
-    };
+    }
 
     return (
         <div className={styles.root}>
-            <PlayersList players={players} isCurrentPlayerLead={players[uid].isLead} />
+            <PlayersList
+                players={players}
+                uid={uid}
+                onSetPlayerName={handleSetPlayerName}
+            />
         </div>
     )
 };

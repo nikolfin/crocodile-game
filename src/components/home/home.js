@@ -16,7 +16,6 @@ const Home = () => {
         firebase.onPlayerRegistered(player => {
             player && setUid(player.uid);
         });
-        console.log(firebase.auth.currentUser);
     }, []);
 
     // регистрирует новую игру и добавляет в бд
