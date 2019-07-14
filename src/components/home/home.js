@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { db, auth, signIn } from '../../firebase';
+import firebase from '../../firebase';
 import { navigate } from 'hookrouter';
 import styles from './styles.css';
 
-const gameId = Math.random().toString(36).substring(7);
-
-// Атвторизуемся анонимным пользователем
-signIn();
-
 const Home = () => {
+    const gameId = Math.random().toString(36).substring(7);
     const [word, setWord] = useState(null);
     const [uid, setUid] = useState(null);
 
-    // записываем в стейт id пользователя
+    // регистрируем игрока
+    firebase.registerPlayer();
+
+    // записываем в стейт id игрока
     useEffect(() => {
-        auth.onAuthStateChanged(user => {
-            user && setUid(user.uid);
+        firebase.onPlayerRegistered(player => {
+            player && setUid(player.uid);
         });
+        console.log(firebase.auth.currentUser);
     }, []);
 
     // регистрирует новую игру и добавляет в бд
     // если игрок регистрирует новую игру, то он является ведущим
     function registerGame() {
-        db.
+        firebase.db.
         ref(`games/${gameId}`).
         set({
             players: {

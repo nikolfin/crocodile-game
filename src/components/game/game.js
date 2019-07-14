@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { string } from 'prop-types';
-import { auth, db, signIn } from '../../firebase';
+import firebase from '../../firebase';
+import PlayersList from './players-list';
 import styles from './styles.css';
 
 const regularPlayer = {
     isLead: false
 };
 
-signIn();
-
 const Game = ({ gameId }) => {
-    const dbPlayersRef = db.ref(`games/${gameId}/players`);
+    const dbPlayersRef = firebase.db.ref(`games/${gameId}/players`);
     const [uid, setUid] = useState(null);
     const [players, setPlayers] = useState(null);
+
+    // регистрируем игрока
+    firebase.registerPlayer();
 
     // фетчим список игроков с бд
     useEffect(() => {
@@ -22,9 +24,9 @@ const Game = ({ gameId }) => {
         }
     }, []);
 
-    // записываем в стейт id пользователя
+    // записываем в стейт id игрока
     useEffect(() => {
-        auth.onAuthStateChanged(user => {
+        firebase.onPlayerRegistered(user => {
             user && setUid(user.uid);
         });
     }, []);
@@ -33,9 +35,9 @@ const Game = ({ gameId }) => {
     // если нет, то добавляем и назначем ему статус isLead = false
     useEffect(() => {
         if (uid && players && !players[uid]) {
-            dbPlayersRef.
-            child(uid).
-            set(regularPlayer);
+            dbPlayersRef.child(uid).set(regularPlayer, () => {
+                console.log('player was added');
+            });
         }
     }, [uid, players]);
 
@@ -43,9 +45,13 @@ const Game = ({ gameId }) => {
         snap.val() && setPlayers(snap.val());
     }
 
+    if (!(players && players[uid])) {
+        return <div>Loading...</div>
+    };
+
     return (
         <div className={styles.root}>
-            {gameId}
+            <PlayersList players={players} isCurrentPlayerLead={players[uid].isLead} />
         </div>
     )
 };

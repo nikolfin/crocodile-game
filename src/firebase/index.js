@@ -1,24 +1,24 @@
 import firebaseConfig from './firebase-config';
-import * as firebase from 'firebase/app';
+import app from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
 
-firebase.initializeApp(firebaseConfig);
+class Firebase {
+    constructor() {
+        app.initializeApp(firebaseConfig);
+        this.auth = app.auth();
+        this.db = app.database();
+    }
 
-const db = firebase.database();
-const auth = firebase.auth();
-const signIn = () => {
-    auth
-        .signInAnonymously()
-        .catch(error => {
-            new Error(error);
+    registerPlayer() {
+        return this.auth.signInAnonymously().catch(error => {
+            alert(error.message);
         });
-};
+    }
 
-export {
-    db,
-    auth,
-    signIn
+    onPlayerRegistered(callback) {
+        return this.auth.onAuthStateChanged(callback);
+    }
 }
 
-export default firebase;
+export default new Firebase();
