@@ -80,3 +80,4 @@ Game.propTypes = {
 
 export default Game;
 
+// компонент холста для рисования
