@@ -4,17 +4,12 @@ import firebase from '../../firebase';
 import PlayersList from './players-list';
 import styles from './styles.css';
 
-const regularPlayer = {
-    isLead: false
-};
-
 const Game = ({ gameId }) => {
     const dbPlayersRef = firebase.db.ref(`games/${gameId}/players`);
     const [uid, setUid] = useState(null);
     const [players, setPlayers] = useState(null);
-
-    // регистрируем игрока
-    firebase.registerPlayer();
+    const [showIntroduceForm, setShowIntroduceForm] = useState(false);
+    const [playerName, setPlayerName] = useState('');
 
     // фетчим список игроков с бд
     useEffect(() => {
@@ -34,10 +29,8 @@ const Game = ({ gameId }) => {
     // Проверяем есть ли такой пользователь в бд,
     // если нет, то добавляем и назначем ему статус isLead = false
     useEffect(() => {
-        if (uid && players && !players[uid]) {
-            dbPlayersRef.child(uid).set(regularPlayer, () => {
-                console.log('player was added');
-            });
+        if (players && !players[uid]) {
+            setShowIntroduceForm(true);
         }
     }, [uid, players]);
 
@@ -45,12 +38,30 @@ const Game = ({ gameId }) => {
         snap.val() && setPlayers(snap.val());
     }
 
-    function handleSetPlayerName(name) {
-        dbPlayersRef.child(uid).update({ name });
+    function handlePlayerNameTyping(e) {
+        setPlayerName(e.target.value);
     }
 
-    if (!(players && players[uid])) {
+    function addNewPlayer() {
+        dbPlayersRef.child(uid).set({
+            isLead: false,
+            name: playerName
+        }, () => {
+            console.log('player was added');
+        });
+    }
+
+    if (!players) {
         return <div>Loading...</div>
+    }
+
+    if (showIntroduceForm && !players[uid]) {
+        return (
+            <>
+                <input type='text' placeholder='имя игрока' value={playerName} onChange={handlePlayerNameTyping} />
+                <button onClick={addNewPlayer}>Представьтесь</button>
+            </>
+        );
     }
 
     return (
@@ -58,7 +69,6 @@ const Game = ({ gameId }) => {
             <PlayersList
                 players={players}
                 uid={uid}
-                onSetPlayerName={handleSetPlayerName}
             />
         </div>
     )
@@ -70,6 +80,3 @@ Game.propTypes = {
 
 export default Game;
 
-
-// Записывать пользователя в бд только после того как он прелставится
-// Перенести форму представления игрока в компонент game

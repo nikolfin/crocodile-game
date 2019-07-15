@@ -1,17 +1,8 @@
 import React, { useState, Fragment } from 'react';
 import { bool, shape, string, func } from 'prop-types';
 
-const PlayersList = ({ players, uid, onSetPlayerName }) => {
-    const [playerName, setPlayerName] = useState('');
-
-    function introduceForm() {
-        return (
-            <>
-                <input type='text' placeholder='имя игрока' onChange={handlePlayerNameTyping} />
-                <button onClick={() => {onSetPlayerName(playerName)}}>Представьтесь</button>
-            </>
-        );
-    }
+const PlayersList = ({ players }) => {
+    const [reply, setReply] = useState('');
 
     function renderPlayerReply(player) {
         if (player.isLead) {
@@ -19,20 +10,12 @@ const PlayersList = ({ players, uid, onSetPlayerName }) => {
         }
 
         return (
-            <input type='text' placeholder='Пишите сюда предполагаемое слово'  onChange={handlePlayerReplyChange} />
+            <input type='text' placeholder='Пишите сюда предполагаемое слово' value={reply}  onChange={handlePlayerReplyChange} />
         )
     }
 
     function handlePlayerReplyChange(e) {
-        console.log(e.target.value);
-    }
-
-    function handlePlayerNameTyping(e) {
-        setPlayerName(e.target.value);
-    }
-
-    if (!players[uid].isLead && !players[uid].name) {
-        return introduceForm()
+        setReply(e.target.value);
     }
 
     return Object.keys(players).map((player, i) => {
@@ -56,9 +39,7 @@ PlayersList.propTypes = {
             name: string,
             reply: string
         })
-    }).isRequired,
-    uid: string.isRequired,
-    onSetPlayerName: func.isRequired
+    }).isRequired
 };
 
 export default PlayersList;

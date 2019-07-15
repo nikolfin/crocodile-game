@@ -8,9 +8,6 @@ const Home = () => {
     const [word, setWord] = useState(null);
     const [uid, setUid] = useState(null);
 
-    // регистрируем игрока
-    firebase.registerPlayer();
-
     // записываем в стейт id игрока
     useEffect(() => {
         firebase.onPlayerRegistered(player => {

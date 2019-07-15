@@ -10,7 +10,7 @@ class Firebase {
         this.db = app.database();
     }
 
-    registerPlayer() {
+    signInAnonymously() {
         return this.auth.signInAnonymously().catch(error => {
             alert(error.message);
         });
