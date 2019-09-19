@@ -6,3 +6,9 @@
     display: block;
     background: #ccc;
 }
+
+.reply {
+    border: 1px solid #ccc;
+    line-height: 15px;
+    width: 146px;
+}

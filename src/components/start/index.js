@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import firebase from '../../firebase';
 import { navigate } from 'hookrouter';
+import { useAuth } from '../../hooks';
 import styles from './styles.css';
 
-const Home = () => {
+const Start = () => {
     const gameId = Math.random().toString(36).substring(7);
     const [word, setWord] = useState(null);
-    const [uid, setUid] = useState(null);
+    const [uid, signInAnonymously] = useAuth();
 
-    // записываем в стейт id игрока
-    useEffect(() => {
-        firebase.onPlayerRegistered(player => {
-            player && setUid(player.uid);
-        });
-    }, []);
+    // Авторизуем игрока и получаем его uid
+    signInAnonymously();
 
     // регистрирует новую игру и добавляет в бд
     // если игрок регистрирует новую игру, то он является ведущим
@@ -46,4 +43,4 @@ const Home = () => {
     )
 };
 
-export default Home;
+export default Start;

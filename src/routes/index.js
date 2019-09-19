@@ -1,8 +1,8 @@
 import React from 'react';
-import Home from '../components/home/home';
-import Game from '../components/game/game';
+import Start from '../components/start';
+import Game from '../components/game';
 
 export default {
-    '/': () => <Home />,
+    '/': () => <Start />,
     '/game/:gameId': ({ gameId }) => <Game gameId={gameId} />
 };

@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { string, bool } from 'prop-types';
 import firebase from '../../firebase';
 import styles from './styles.css';
 
-const Canvas = ({ gameId }) => {
+const Canvas = ({ gameId, isTheDrawingPlayerLead }) => {
     const dbCanvasRef = firebase.db.ref(`games/${gameId}/canvasData`);
     const [localCanvasData, setLocalCanvasData] = useState({});
     const [isPressed, setIsPressed] = useState(false);
-    const [isCleared, setIsleared] = useState(true);
+    const [isCleared, setIsCleared] = useState(true);
     const cnv = useRef(null);
 
     useEffect(() => {
@@ -49,11 +50,12 @@ const Canvas = ({ gameId }) => {
 
         if (!cleared) {
             ctx.clearRect(0, 0, cnv.current.width, cnv.current.height);
-            setIsleared(true);
+            setIsCleared(true);
         }
     }
 
     function handleMouseMove(e) {
+        if (!isTheDrawingPlayerLead) return;
         setLocalCanvasData({
             x: e.nativeEvent.offsetX,
             y: e.nativeEvent.offsetY
@@ -62,7 +64,8 @@ const Canvas = ({ gameId }) => {
 
     return (
         <div style={{ background: '#f0f0f0' }}>
-            <div onClick={() => {setIsleared(false)}}>clear</div>
+            {isTheDrawingPlayerLead ?
+                <div onClick={() => {setIsCleared(false)}}>clear</div> : null}
             <canvas
                 ref={cnv}
                 width={500}
@@ -77,6 +80,11 @@ const Canvas = ({ gameId }) => {
             />
         </div>
     );
+};
+
+Canvas.propTypes = {
+    gameId: string.isRequired,
+    isTheDrawingPlayerLead: bool.isRequired
 };
 
 export default Canvas;
