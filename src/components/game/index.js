@@ -51,7 +51,7 @@ const Game = ({ gameId }) => {
                                 type='text'
                                 placeholder='Пишите сюда предполагаемое слово'
                                 value={reply}
-                                onChange={(e) => {
+                                onChange={e => {
                                     setPlayerReply(playerUid, e.target.value);
                                 }}
                             /> :
