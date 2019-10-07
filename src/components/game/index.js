@@ -9,27 +9,22 @@ const Game = ({ gameId }) => {
     const dbPlayersRef = firebase.db.ref(`games/${gameId}/players`);
     const [uid, signInAnonymously] = useAuth();
     const [players, addNewPlayer, setPlayerReply] = usePlayers(dbPlayersRef);
-    const [showIntroduceForm, setShowIntroduceForm] = useState(false);
     const [playerName, setPlayerName] = useState('');
 
     // Авторизуем игрока и получаем его uid
     signInAnonymously();
 
-    // Проверяем есть ли такой игрок в бд,
-    // если нет, то показываем ему форму ввода имени
-    useEffect(() => {
-        setShowIntroduceForm(players && !players[uid]);
-    }, [players, uid]);
-
     function handlePlayerNameTyping(e) {
         setPlayerName(e.target.value);
     }
 
-    if (!players) {
+    if (!(players && uid)) {
         return <div>Loading...</div>
     }
 
-    if (showIntroduceForm) {
+    // если игрока нет в общем списке
+    // показываем форму ввода имени
+    if (!players[uid]) {
         return (
             <>
                 <input type='text' placeholder='имя игрока' value={playerName} onChange={handlePlayerNameTyping} />
@@ -75,5 +70,3 @@ Game.propTypes = {
 };
 
 export default Game;
-
-// компонент холста для рисования
