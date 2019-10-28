@@ -6,17 +6,20 @@ import 'firebase/auth';
 class Firebase {
     constructor() {
         app.initializeApp(firebaseConfig);
+
         this.auth = app.auth();
         this.db = app.database();
     }
 
     signInAnonymously() {
-        return this.auth.signInAnonymously().catch(error => {
-            alert(error.message);
-        });
+        this.auth.setPersistence(app.auth.Auth.Persistence.SESSION)
+            .then(() => this.auth.signInAnonymously())
+            .catch(error => {
+                alert(error.message);
+            })
     }
 
-    onPlayerRegistered(callback) {
+    onAuthStateChanged(callback) {
         return this.auth.onAuthStateChanged(callback);
     }
 }

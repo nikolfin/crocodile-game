@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState } from 'react';
 import { string } from 'prop-types';
 import firebase from '../../firebase';
 import Canvas from './canvas';
