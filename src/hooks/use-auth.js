@@ -9,8 +9,8 @@ export const useAuth = () => {
 
     // записываем в стейт id игрока
     useEffect(() => {
-        firebase.onPlayerRegistered(player => {
-            player && setUid(player.uid);
+        firebase.onAuthStateChanged(player => {
+            setUid(player ? player.uid : null);
         });
     }, []);
 

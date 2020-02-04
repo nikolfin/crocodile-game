@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState } from 'react';
 import { string } from 'prop-types';
 import firebase from '../../firebase';
 import Canvas from './canvas';
@@ -9,17 +9,10 @@ const Game = ({ gameId }) => {
     const dbPlayersRef = firebase.db.ref(`games/${gameId}/players`);
     const [uid, signInAnonymously] = useAuth();
     const [players, addNewPlayer, setPlayerReply] = usePlayers(dbPlayersRef);
-    const [showIntroduceForm, setShowIntroduceForm] = useState(false);
     const [playerName, setPlayerName] = useState('');
 
     // Авторизуем игрока и получаем его uid
     signInAnonymously();
-
-    // Проверяем есть ли такой игрок в бд,
-    // если нет, то показываем ему форму ввода имени
-    useEffect(() => {
-        setShowIntroduceForm(players && !players[uid]);
-    }, [players, uid]);
 
     function handlePlayerNameTyping(e) {
         setPlayerName(e.target.value);
@@ -29,7 +22,9 @@ const Game = ({ gameId }) => {
         return <div>Loading...</div>
     }
 
-    if (showIntroduceForm) {
+    // если игрока нет в общем списке
+    // показываем форму ввода имени
+    if (!players[uid]) {
         return (
             <>
                 <input type='text' placeholder='имя игрока' value={playerName} onChange={handlePlayerNameTyping} />
@@ -56,7 +51,7 @@ const Game = ({ gameId }) => {
                                 type='text'
                                 placeholder='Пишите сюда предполагаемое слово'
                                 value={reply}
-                                onChange={(e) => {
+                                onChange={e => {
                                     setPlayerReply(playerUid, e.target.value);
                                 }}
                             /> :
@@ -75,5 +70,3 @@ Game.propTypes = {
 };
 
 export default Game;
-
-// компонент холста для рисования
