@@ -25,7 +25,7 @@ const Game = ({ gameId }) => {
         setPlayerName(e.target.value);
     }
 
-    if (!players) {
+    if (!(players && uid)) {
         return <div>Loading...</div>
     }
 
